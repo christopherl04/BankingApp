@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BankingApp
 {
-    Abstract class Account : IAccount
+    abstract class Account : IAccount
     {
         public double startingBalance { get; set; }
 
@@ -28,7 +28,7 @@ namespace BankingApp
             inactive
         }
         
-        public Account()
+        public Account(double currentBalance, double annualInterestRate)
         {
             this.currentBalance = currentBalance;
             this.annualInterestRate = annualInterestRate;
@@ -69,5 +69,19 @@ namespace BankingApp
             
         }
 
+        public void MakeWithdrawl(double amount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void MakeDeposit(double amount)
+        {
+            throw new NotImplementedException();
+        }
+
+        string IAccount.CloseAndReport()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
