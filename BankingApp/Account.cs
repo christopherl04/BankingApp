@@ -97,14 +97,9 @@ namespace BankingApp
 
             public override void MakeWithdrawl(double amount)
             {
-                bool isActive;
-
-                if (currentBalance < 25)
-                {
-
-                }
+                var isActive = activity.active;
+                
             }
-
         }
 
         class ChequingAccount : Account
