@@ -15,5 +15,6 @@ namespace BankingApp
         void CalculateInterest();
 
         string CloseAndReport();
+        void MakeWithdrawl(double amount);
     }
 }

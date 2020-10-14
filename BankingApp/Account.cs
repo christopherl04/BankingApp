@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BankingApp
 {
+
     abstract class Account : IAccount
     {
         public double startingBalance { get; set; }
@@ -22,12 +24,23 @@ namespace BankingApp
 
         private double monthlyServiceCharge;
 
-        private enum activity
+        public enum activity
         {
-            active,
-            inactive
-        }
-        
+            active = 0,
+            inactive =1
+        };
+
+
+            //public static bool ToBoolean(this activity value)
+            //{
+            //// which options should be treated as "true" ones
+            //if ((activity == 0)
+            //    return value == activity.inactive;
+            //else
+            //    return value == activity.active;
+            //}
+
+
         public Account(double currentBalance, double annualInterestRate)
         {
             this.currentBalance = currentBalance;
@@ -79,6 +92,41 @@ namespace BankingApp
 
             return report;
             
+        }
+        class SavingsAccount : Account
+        {
+            public SavingsAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
+            {
+                
+            }
+
+            public void MakeWithdrawl(double amount)
+            {
+                bool isActive;
+
+                if (currentBalance < 25)
+                {
+                    
+                }
+            }
+
+        }
+
+        class ChequingAccount : Account
+        {
+            public ChequingAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
+            {
+            }
+            public void MakeWithdrawl(double amount)
+            {
+                double withdrawl = currentBalance - amount;
+                if(withdrawl < 0)
+                {
+                    Console.WriteLine("The withdrawal will not be made due to insufficient funds.");
+                    monthlyServiceCharge = 15;
+                    currentBalance -= monthlyServiceCharge;
+                }
+            }
         }
 
     }
