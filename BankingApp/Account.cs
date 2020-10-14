@@ -34,18 +34,18 @@ namespace BankingApp
             this.annualInterestRate = annualInterestRate;
         }
 
-        public void MakeDeposit()
+        public void MakeDeposit(double depositAmount)
         {
             Console.WriteLine("How much money would you like to deposit?");
-            double depositAmount = Double.Parse(Console.ReadLine());
+            depositAmount = Double.Parse(Console.ReadLine());
             currentBalance += depositAmount;
 
             numberOfDeposits++;
         }
-        public void MakeWithdraw()
+        public void MakeWithdrawl(double withdrawAmount)
         {
             Console.WriteLine("How much money would you like to withdraw?");
-            double withdrawAmount = Double.Parse(Console.ReadLine());
+            withdrawAmount = Double.Parse(Console.ReadLine());
             currentBalance -= withdrawAmount;
 
             numberOfWithdrawls++;
@@ -54,34 +54,32 @@ namespace BankingApp
         {
             double monthlyInterestRate = (annualInterestRate / 12);
             double monthlyInterest = currentBalance * monthlyInterestRate;
-            currentBalance += monthlyInterest;
+            double totalMonthlyBalance = currentBalance += monthlyInterest;
+            Console.WriteLine("Monthly interest rate = {0:C} \n Monthly interest amount = {1:C}\n Total monthly balance = {2:C}",
+                                monthlyInterestRate, monthlyInterest, totalMonthlyBalance);
+
         }
-        public void CloseAndReport()
+        string IAccount.CloseAndReport()
         {
+            CalculateInterest();
+
             double previousBalance = currentBalance;
             double newBalance = currentBalance - monthlyServiceCharge;
+
+            double percentChange = (startingBalance / newBalance) * 100;
             
             numberOfWithdrawls = 0;
             numberOfDeposits = 0;
             monthlyServiceCharge = 0;
 
-            Console.WriteLine("Your previous balance was = {0} \n Your new balance is = {1}", previousBalance, newBalance);
+            string report = string.Format("Your previous balance was = {0}" +
+                "\n Your new balance is = {1}" +
+                "\n The percentage of change from your starting and current balance is: {2}%",
+                previousBalance, newBalance, percentChange);
+
+            return report;
             
         }
 
-        public void MakeWithdrawl(double amount)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void MakeDeposit(double amount)
-        {
-            throw new NotImplementedException();
-        }
-
-        string IAccount.CloseAndReport()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
