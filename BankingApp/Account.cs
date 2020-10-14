@@ -97,10 +97,28 @@ namespace BankingApp
 
             public override void MakeWithdrawl(double amount)
             {
-                bool isActive; //do something with boolean and if its true or false set the enum value
-
-                if (currentBalance < 25)
+                bool isActive = false;
+                                
+                if(isActive != false)
+                {                    
+                    if(currentBalance < 25)
+                    {
+                        isActive = false;
+                        Console.WriteLine("Account is {0}. Withdrawls will be denied until funds are higher than $25"
+                                        , activity.inactive);
+                        Environment.Exit(0);
+                    }
+                    else
+                    {
+                        isActive = true;
+                        Console.WriteLine("Account is {0}", activity.active);
+                        base.MakeWithdrawl(amount);
+                    }
+                }
+                else
                 {
+                    isActive = false;
+                    Console.WriteLine("Account is {0}", activity.inactive);
 
                 }
             }
