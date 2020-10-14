@@ -102,7 +102,7 @@ namespace BankingApp
 
             public void MakeWithdrawl(double amount)
             {
-                bool isActive;
+                bool isActive; //do something with boolean and if its true or false set the enum value
 
                 if (currentBalance < 25)
                 {
