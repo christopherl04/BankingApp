@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingApp
 {
@@ -27,18 +22,18 @@ namespace BankingApp
         public enum activity
         {
             active = 0,
-            inactive =1
+            inactive = 1
         };
 
 
-            //public static bool ToBoolean(this activity value)
-            //{
-            //// which options should be treated as "true" ones
-            //if ((activity == 0)
-            //    return value == activity.inactive;
-            //else
-            //    return value == activity.active;
-            //}
+        //public static bool ToBoolean(this activity value)
+        //{
+        //// which options should be treated as "true" ones
+        //if ((activity == 0)
+        //    return value == activity.inactive;
+        //else
+        //    return value == activity.active;
+        //}
 
 
         public Account(double currentBalance, double annualInterestRate)
@@ -47,7 +42,7 @@ namespace BankingApp
             this.annualInterestRate = annualInterestRate;
         }
 
-        public void MakeDeposit(double depositAmount)
+        public virtual void MakeDeposit(double depositAmount)
         {
             Console.WriteLine("How much money would you like to deposit?");
             depositAmount = Double.Parse(Console.ReadLine());
@@ -55,7 +50,7 @@ namespace BankingApp
 
             numberOfDeposits++;
         }
-        public void MakeWithdrawl(double withdrawAmount)
+        public virtual void MakeWithdrawl(double withdrawAmount)
         {
             Console.WriteLine("How much money would you like to withdraw?");
             withdrawAmount = Double.Parse(Console.ReadLine());
@@ -72,7 +67,7 @@ namespace BankingApp
                                 monthlyInterestRate, monthlyInterest, totalMonthlyBalance);
 
         }
-        string IAccount.CloseAndReport()
+        public virtual string CloseAndReport()
         {
             CalculateInterest();
 
@@ -80,7 +75,7 @@ namespace BankingApp
             double newBalance = currentBalance - monthlyServiceCharge;
 
             double percentChange = (startingBalance / newBalance) * 100;
-            
+
             numberOfWithdrawls = 0;
             numberOfDeposits = 0;
             monthlyServiceCharge = 0;
@@ -91,22 +86,22 @@ namespace BankingApp
                 previousBalance, newBalance, percentChange);
 
             return report;
-            
+
         }
         class SavingsAccount : Account
         {
             public SavingsAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
             {
-                
+
             }
 
-            public void MakeWithdrawl(double amount)
+            public override void MakeWithdrawl(double amount)
             {
                 bool isActive;
 
                 if (currentBalance < 25)
                 {
-                    
+
                 }
             }
 
@@ -116,16 +111,33 @@ namespace BankingApp
         {
             public ChequingAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
             {
+
             }
-            public void MakeWithdrawl(double amount)
+            public override void MakeWithdrawl(double amount)
             {
                 double withdrawl = currentBalance - amount;
-                if(withdrawl < 0)
+                if (withdrawl < 0)
                 {
                     Console.WriteLine("The withdrawal will not be made due to insufficient funds.");
                     monthlyServiceCharge = 15;
                     currentBalance -= monthlyServiceCharge;
                 }
+                else if (withdrawl > 0)
+                {
+                    base.MakeWithdrawl(amount);
+                }
+            }
+
+            public override void MakeDeposit(double depositAmount)
+            {
+                base.MakeDeposit(depositAmount);
+            }
+
+            public override string CloseAndReport()
+            {
+                double withdrawlCharge = 0.1 * numberOfWithdrawls;
+                monthlyServiceCharge = 5 + withdrawlCharge;
+                return base.CloseAndReport();
             }
         }
 
