@@ -21,20 +21,9 @@ namespace BankingApp
 
         public enum activity
         {
-            active = 0,
-            inactive = 1
+            active,
+            inactive
         };
-
-
-        //public static bool ToBoolean(this activity value)
-        //{
-        //// which options should be treated as "true" ones
-        //if ((activity == 0)
-        //    return value == activity.inactive;
-        //else
-        //    return value == activity.active;
-        //}
-
 
         public Account(double currentBalance, double annualInterestRate)
         {
@@ -90,37 +79,63 @@ namespace BankingApp
         }
         class SavingsAccount : Account
         {
+            activity status;
             public SavingsAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
             {
-
-            }
-
-            public override void MakeWithdrawl(double amount)
-            {
-                bool isActive = false;
-                                
-                if(isActive != false)
-                {                    
-                    if(currentBalance < 25)
-                    {
-                        isActive = false;
-                        Console.WriteLine("Account is {0}. Withdrawls will be denied until funds are higher than $25"
-                                        , activity.inactive);
-                        Environment.Exit(0);
-                    }
-                    else
-                    {
-                        isActive = true;
-                        Console.WriteLine("Account is {0}", activity.active);
-                        base.MakeWithdrawl(amount);
-                    }
+                if(currentBalance < -25)
+                {
+                    status = activity.inactive;
                 }
                 else
                 {
-                    isActive = false;
-                    Console.WriteLine("Account is {0}", activity.inactive);
-
+                    status = activity.active;
                 }
+            }
+
+            public override void MakeWithdrawl(double amount)//set enum in constructor, instantiate it as an object instead of bool and then set it. and it's -25
+            {
+                if(status == activity.active)
+                {
+                    base.MakeWithdrawl(amount);
+                }
+                else
+                {
+                    Console.WriteLine("Account is innactive due to funds being lower than -$25." +
+                                      "\n Raise the balance to make future withdrawls.");
+                }
+            }
+
+            public override void MakeDeposit(double depositAmount)
+            {                
+
+                if(status == activity.inactive && (currentBalance + depositAmount) > 25)
+                {
+                    base.MakeDeposit(depositAmount);
+                    status = activity.active;
+                    Console.WriteLine("Funds have been deposited. Account is now active!");
+                }
+                else
+                {
+                    Console.WriteLine("Funds have been deposited but the account remains" +
+                                      " innactive due to funds being lower than -$25." +
+                                      "\n Raise the balance to re-activate the account.");
+                }
+            }
+
+            public override string CloseAndReport()
+            {
+                if(numberOfWithdrawls > 4)
+                {
+                    int moreThanFour = 4 - numberOfWithdrawls;
+                    int absoluteValue = Math.Abs(moreThanFour);
+                    int serviceCharge = 1 * absoluteValue;
+                    monthlyServiceCharge += serviceCharge;
+                }
+                else
+                {
+                    return base.CloseAndReport();
+                }
+                return base.CloseAndReport();
             }
 
         }
