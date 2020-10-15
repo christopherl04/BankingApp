@@ -79,27 +79,63 @@ namespace BankingApp
         }
         class SavingsAccount : Account
         {
+            activity status;
             public SavingsAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
             {
-
+                if(currentBalance < -25)
+                {
+                    status = activity.inactive;
+                }
+                else
+                {
+                    status = activity.active;
+                }
             }
 
-            public override void MakeWithdrawl(double amount)
+            public override void MakeWithdrawl(double amount)//set enum in constructor, instantiate it as an object instead of bool and then set it. and it's -25
             {
-                var isActive = activity.active;
-                
+                if(status == activity.active)
+                {
+                    base.MakeWithdrawl(amount);
+                }
+                else
+                {
+                    Console.WriteLine("Account is innactive due to funds being lower than -$25." +
+                                      "\n Raise the balance to make future withdrawls.");
+                }
             }
 
-            public class GlobalSavingsAccount : SavingsAccount, IExchangeable
-            {
-                public GlobalSavingsAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
-                {
-                }
+            public override void MakeDeposit(double depositAmount)
+            {                
 
-                public double USValue(double rate)
+                if(status == activity.inactive && (currentBalance + depositAmount) > 25)
                 {
-                    return currentBalance* rate;
+                    base.MakeDeposit(depositAmount);
+                    status = activity.active;
+                    Console.WriteLine("Funds have been deposited. Account is now active!");
                 }
+                else
+                {
+                    Console.WriteLine("Funds have been deposited but the account remains" +
+                                      " innactive due to funds being lower than -$25." +
+                                      "\n Raise the balance to re-activate the account.");
+                }
+            }
+
+            public override string CloseAndReport()
+            {
+                if(numberOfWithdrawls > 4)
+                {
+                    int moreThanFour = 4 - numberOfWithdrawls;
+                    int absoluteValue = Math.Abs(moreThanFour);
+                    int serviceCharge = 1 * absoluteValue;
+                    monthlyServiceCharge += serviceCharge;
+                }
+                else
+                {
+                    return base.CloseAndReport();
+                }
+                return base.CloseAndReport();
             }
         }
 
