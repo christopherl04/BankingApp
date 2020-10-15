@@ -7,7 +7,7 @@ namespace BankingApp
     {
         public double startingBalance { get; set; }
 
-        public double currentBalance { get; set; }
+        public double currentBalance { get ; set; }
 
         private double totalOfDeposits;
         private int numberOfDeposits;
@@ -33,16 +33,13 @@ namespace BankingApp
 
         public virtual void MakeDeposit(double depositAmount)
         {
-            Console.WriteLine("How much money would you like to deposit?");
-            depositAmount = Double.Parse(Console.ReadLine());
             currentBalance += depositAmount;
-
+            Console.WriteLine(currentBalance);
+            Console.ReadKey();
             numberOfDeposits++;
         }
         public virtual void MakeWithdrawl(double withdrawAmount)
         {
-            Console.WriteLine("How much money would you like to withdraw?");
-            withdrawAmount = Double.Parse(Console.ReadLine());
             currentBalance -= withdrawAmount;
 
             numberOfWithdrawls++;
@@ -52,35 +49,38 @@ namespace BankingApp
             double monthlyInterestRate = (annualInterestRate / 12);
             double monthlyInterest = currentBalance * monthlyInterestRate;
             double totalMonthlyBalance = currentBalance += monthlyInterest;
-            Console.WriteLine("Monthly interest rate = {0:C} \n Monthly interest amount = {1:C}\n Total monthly balance = {2:C}",
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("Monthly interest rate: {0:C} \nMonthly interest amount: {1:C}\nTotal monthly balance: {2:C}",
                                 monthlyInterestRate, monthlyInterest, totalMonthlyBalance);
-
         }
         public virtual string CloseAndReport()
         {
             CalculateInterest();
-
+            Console.WriteLine();
+            numberOfWithdrawls = 0;
+            numberOfDeposits = 0;
             double previousBalance = currentBalance;
-            double newBalance = currentBalance - monthlyServiceCharge;
+            double newBalance = previousBalance - monthlyServiceCharge;
 
             double percentChange = (startingBalance / newBalance) * 100;
 
-            numberOfWithdrawls = 0;
-            numberOfDeposits = 0;
-            string report = string.Format("Your previous balance was = {0}" +
-                   "\n Your new balance is = {1}" +
-                   "\n The percentage of change from your starting and current balance is: {2}%",
-                   previousBalance, newBalance, percentChange);
-
+            
+            string report = string.Format("Your previous balance was : {0}" +
+                                           "\nYour new balance is: {1}" +
+                                           "\nThe percentage of change from your starting and current balance is: {2}%",
+                                            previousBalance, newBalance, percentChange);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(report);
+            Console.ResetColor();
             return report;
 
         }
-        class SavingsAccount : Account
+        public class SavingsAccount : Account
         {
             activity status;
             public SavingsAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
             {
-                if (currentBalance < -25)
+                if (currentBalance < 25)
                 {
                     status = activity.inactive;
                 }
@@ -98,8 +98,8 @@ namespace BankingApp
                 }
                 else
                 {
-                    Console.WriteLine("Account is innactive due to funds being lower than -$25." +
-                                      "\n Raise the balance to make future withdrawls.");
+                    Console.WriteLine("Account is innactive due to funds being lower than $25." +
+                                      "\nRaise the balance to make future withdrawls.");
                 }
             }
 
@@ -115,8 +115,8 @@ namespace BankingApp
                 else
                 {
                     Console.WriteLine("Funds have been deposited but the account remains" +
-                                      " innactive due to funds being lower than -$25." +
-                                      "\n Raise the balance to re-activate the account.");
+                                      " innactive due to funds being lower than $25." +
+                                      "\nRaise the balance to re-activate the account.");
                 }
             }
 
@@ -149,7 +149,7 @@ namespace BankingApp
             }
         }
 
-        class ChequingAccount : Account
+        public class ChequingAccount : Account
         {
             public ChequingAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
             {
