@@ -100,6 +100,18 @@ namespace BankingApp
                 var isActive = activity.active;
                 
             }
+
+            public class GlobalSavingsAccount : SavingsAccount, IExchangeable
+            {
+                public GlobalSavingsAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
+                {
+                }
+
+                public double USValue(double rate)
+                {
+                    return currentBalance* rate;
+                }
+            }
         }
 
         class ChequingAccount : Account
