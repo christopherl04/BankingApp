@@ -21,20 +21,9 @@ namespace BankingApp
 
         public enum activity
         {
-            active = 0,
-            inactive = 1
+            active,
+            inactive
         };
-
-
-        //public static bool ToBoolean(this activity value)
-        //{
-        //// which options should be treated as "true" ones
-        //if ((activity == 0)
-        //    return value == activity.inactive;
-        //else
-        //    return value == activity.active;
-        //}
-
 
         public Account(double currentBalance, double annualInterestRate)
         {
