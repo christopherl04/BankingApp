@@ -67,12 +67,10 @@ namespace BankingApp
 
             numberOfWithdrawls = 0;
             numberOfDeposits = 0;
-            monthlyServiceCharge = 0;
-
             string report = string.Format("Your previous balance was = {0}" +
-                "\n Your new balance is = {1}" +
-                "\n The percentage of change from your starting and current balance is: {2}%",
-                previousBalance, newBalance, percentChange);
+                   "\n Your new balance is = {1}" +
+                   "\n The percentage of change from your starting and current balance is: {2}%",
+                   previousBalance, newBalance, percentChange);
 
             return report;
 
@@ -82,7 +80,7 @@ namespace BankingApp
             activity status;
             public SavingsAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
             {
-                if(currentBalance < -25)
+                if (currentBalance < -25)
                 {
                     status = activity.inactive;
                 }
@@ -94,7 +92,7 @@ namespace BankingApp
 
             public override void MakeWithdrawl(double amount)//set enum in constructor, instantiate it as an object instead of bool and then set it. and it's -25
             {
-                if(status == activity.active)
+                if (status == activity.active)
                 {
                     base.MakeWithdrawl(amount);
                 }
@@ -106,9 +104,9 @@ namespace BankingApp
             }
 
             public override void MakeDeposit(double depositAmount)
-            {                
+            {
 
-                if(status == activity.inactive && (currentBalance + depositAmount) > 25)
+                if (status == activity.inactive && (currentBalance + depositAmount) > 25)
                 {
                     base.MakeDeposit(depositAmount);
                     status = activity.active;
@@ -124,7 +122,7 @@ namespace BankingApp
 
             public override string CloseAndReport()
             {
-                if(numberOfWithdrawls > 4)
+                if (numberOfWithdrawls > 4)
                 {
                     int moreThanFour = 4 - numberOfWithdrawls;
                     int absoluteValue = Math.Abs(moreThanFour);
@@ -136,6 +134,18 @@ namespace BankingApp
                     return base.CloseAndReport();
                 }
                 return base.CloseAndReport();
+            }
+
+            public class GlobalSavingsAccount : Account, IExchangeable
+            {
+                public GlobalSavingsAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
+                {
+                }
+
+                public double USValue(double rate)
+                {
+                    return rate * currentBalance;
+                }
             }
         }
 
