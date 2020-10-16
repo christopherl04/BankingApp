@@ -12,16 +12,17 @@ namespace BankingApp
         private int numberDeposits;
         private double totalWithdrawls;
         private int numberWithdrawls;
-        private double annualInterestRate;
+        public double annualInterestRate;
         private double monthServiceCharge;
-
-
-        public double StartingBalance { get { return startingBalance;} set { } }
-        public double CurrentBalance { get {return currentBalance; }}
-        protected Account()
+        private enum Acticity
         {
+            active,
+            inactive
+        };
 
-        }
+        public double StartingBalance { get { return startingBalance;} set { startingBalance = value; } }
+        public double CurrentBalance { get {return currentBalance; }}
+
         protected Account(double startingBalance, double annualInterestRate)
         {
             StartingBalance = startingBalance;
@@ -29,17 +30,10 @@ namespace BankingApp
         }
        
 
-        private enum Acticity
-        {
-            active,
-            inactive
-        };
         
         public virtual void MakeDeposit(double amount)
         {
             currentBalance += amount + startingBalance;
-            Console.WriteLine("deposit works");
-            Console.WriteLine(CurrentBalance);
             numberDeposits++;
         }
 
@@ -51,9 +45,7 @@ namespace BankingApp
         public void CalculateInterest()
         {
             double monthlyInterestRate = annualInterestRate / 12;
-            Console.WriteLine(annualInterestRate);
             double monthlyInterest = CurrentBalance * monthlyInterestRate;
-            Console.WriteLine(CurrentBalance + " e");
             currentBalance += monthlyInterest;
             Console.WriteLine("Annual Interest Rate: {0}%\n" +
                               "Monthly Interest Rate: {1}%\n" +
@@ -80,8 +72,8 @@ namespace BankingApp
 
         public class SavingsAccount : Account
         {
-            //public  double StartingBalance { get { return startingBalance; } }
-            //public  double CurrentBalance { get { return currentBalance; } }
+            public double StartingBalance { get { return startingBalance; } }
+            public double CurrentBalance { get { return currentBalance; } }
             Acticity status;
             public SavingsAccount(double startingBalance, double annualInterestRate) : base(startingBalance, annualInterestRate)
             {
