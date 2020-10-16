@@ -21,17 +21,18 @@ namespace BankingApp
             Console.Clear();
             string menuInput;
             string input;
-           
             Console.WriteLine("Bank Menu\n");
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine("A: Savings\n" +
-                              "B: Checking\n" +
-                              "C: GlobalSavings\n" +
-                              "Q: Exit");
-            Console.ResetColor();
-            Console.Write(">> ");
-
-            menuInput = Console.ReadLine();
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("A: Savings\n" +
+                                  "B: Checking\n" +
+                                  "C: GlobalSavings\n" +
+                                  "Q: Exit");
+                Console.ResetColor();
+            do {
+                Console.Write(">> ");
+                menuInput = Console.ReadLine();
+            } while (!(menuInput.ToLower() == "a" || menuInput.ToLower() == "b" || menuInput.ToLower() == "c" || menuInput.ToLower() == "q"));
+            
             do
             {
                 switch (menuInput.ToLower())
@@ -75,7 +76,7 @@ namespace BankingApp
                                 return true;
                         }
                     case "b":
-                        Account.ChequingAccount chequingAccount = new Account.ChequingAccount(5, 2);
+                        Account.ChequingAccount chequingAccount = new Account.ChequingAccount(5, 12);
                         Console.WriteLine("Checking Menu\n");
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.WriteLine("A: Deposit\n" +
@@ -94,6 +95,7 @@ namespace BankingApp
                                 Console.WriteLine("How much money would you like to deposit?");
                                 double depositAmount = Double.Parse(Console.ReadLine());
                                 chequingAccount.MakeDeposit(depositAmount);
+                                Console.ReadLine();
                                 return true;
                             case "b":
                                 Console.WriteLine("How much money would you like to withdraw?");
@@ -112,7 +114,7 @@ namespace BankingApp
                                 return true;
                         }
                     case "c":
-                        Account.SavingsAccount.GlobalSavingsAccount globalSavingsAccount = new Account.SavingsAccount.GlobalSavingsAccount(5, 2);
+                        Account.SavingsAccount.GlobalSavingsAccount globalSavingsAccount = new Account.SavingsAccount.GlobalSavingsAccount(5, 12);
                         do
                         {
                             Console.WriteLine("Global Savings Menu\n");
@@ -133,6 +135,8 @@ namespace BankingApp
                                 Console.WriteLine("How much money would you like to deposit?");
                                 double depositAmount = Double.Parse(Console.ReadLine());
                                 globalSavingsAccount.MakeDeposit(depositAmount);
+                                Console.ReadLine();
+
                                 return true;
                             case "b":
                                 Console.WriteLine("How much money would you like to withdraw?");

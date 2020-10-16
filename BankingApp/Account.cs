@@ -5,8 +5,8 @@ namespace BankingApp
 
     abstract class Account : IAccount
     {
-        public static double startingBalance;
-        public static double currentBalance;
+        public  double startingBalance;
+        public  double currentBalance;
         private double totalDeposits;
         private int numberDeposits;
         private double totalWithdrawls;
@@ -15,23 +15,28 @@ namespace BankingApp
         private double monthServiceCharge;
 
 
-        public static double StartingBalance { get { return startingBalance;} set { startingBalance = value; } }
-        public static double CurrentBalance { get {return currentBalance; } set { currentBalance = value; } }
+        public virtual double StartingBalance { get { return startingBalance;}}
+        public virtual double CurrentBalance { get {return currentBalance; }}
+        protected Account()
+        {
 
+        }
         protected Account(double startingBalance, double annualInterestRate)
         {
-            StartingBalance = startingBalance;
+            this.startingBalance = startingBalance;
             this.annualInterestRate = annualInterestRate;
         }
+       
 
         private enum Acticity
         {
             active,
             inactive
         };
+        
         public virtual void MakeDeposit(double amount)
         {
-            Account.CurrentBalance += amount + startingBalance;
+            currentBalance += amount + startingBalance;
             Console.WriteLine("deposit works");
             Console.WriteLine(CurrentBalance);
             numberDeposits++;
@@ -39,7 +44,7 @@ namespace BankingApp
 
         public virtual void MakeWithdrawl(double amount)
         {
-            Account.CurrentBalance -= amount + startingBalance;
+            currentBalance -= amount + startingBalance;
             numberWithdrawls++;
         }
         public void CalculateInterest()
@@ -49,13 +54,14 @@ namespace BankingApp
             double monthlyInterest = CurrentBalance * monthlyInterestRate;
             Console.WriteLine(CurrentBalance + " e");
             currentBalance += monthlyInterest;
-            Console.WriteLine("Monthly Interest Rate: {0}%\n" +
-                              "Monthly Interest: {1:C}",monthlyInterestRate,monthlyInterest);
+            Console.WriteLine("Annual Interest Rate: {0}%\n" +
+                              "Monthly Interest Rate: {1}%\n" +
+                              "Monthly Interest: {2:C}",annualInterestRate, monthlyInterestRate,monthlyInterest);
         }
 
         public virtual string CloseAndReport()
         {
-            CurrentBalance -= monthServiceCharge;
+            currentBalance -= monthServiceCharge;
             CalculateInterest();
             numberDeposits = 0;
             numberWithdrawls = 0;
@@ -73,6 +79,8 @@ namespace BankingApp
 
         public class SavingsAccount : Account
         {
+            public override double StartingBalance { get { return startingBalance; } }
+            public override double CurrentBalance { get { return currentBalance; } }
             Acticity status;
             public SavingsAccount(double startingBalance, double annualInterestRate) : base(startingBalance, annualInterestRate)
             {
