@@ -1,12 +1,13 @@
-﻿using System;
+﻿using MyExtension;
+using System;
 
 namespace BankingApp
 {
 
-    abstract class Account : IAccount
+     abstract class Account : IAccount
     {
-        public  double startingBalance;
-        public  double currentBalance;
+        public static double startingBalance;
+        public static double currentBalance;
         private double totalDeposits;
         private int numberDeposits;
         private double totalWithdrawls;
@@ -15,15 +16,15 @@ namespace BankingApp
         private double monthServiceCharge;
 
 
-        public virtual double StartingBalance { get { return startingBalance;}}
-        public virtual double CurrentBalance { get {return currentBalance; }}
+        public double StartingBalance { get { return startingBalance;} set { } }
+        public double CurrentBalance { get {return currentBalance; }}
         protected Account()
         {
 
         }
         protected Account(double startingBalance, double annualInterestRate)
         {
-            this.startingBalance = startingBalance;
+            StartingBalance = startingBalance;
             this.annualInterestRate = annualInterestRate;
         }
        
@@ -56,7 +57,7 @@ namespace BankingApp
             currentBalance += monthlyInterest;
             Console.WriteLine("Annual Interest Rate: {0}%\n" +
                               "Monthly Interest Rate: {1}%\n" +
-                              "Monthly Interest: {2:C}",annualInterestRate, monthlyInterestRate,monthlyInterest);
+                              "Monthly Interest: {2:C}", annualInterestRate, monthlyInterestRate, monthlyInterest.toNAMoneyFormat(true));
         }
 
         public virtual string CloseAndReport()
@@ -66,11 +67,11 @@ namespace BankingApp
             numberDeposits = 0;
             numberWithdrawls = 0;
             monthServiceCharge = 0;
-            double percentChange = (StartingBalance / CurrentBalance) * 100;
+            double percentChange = MyExtension.ExtensionMethod.getPercentageChange();
             string report = string.Format("Previous Balance: {0:C}\n" +
                                           "New Balance: {1:C}\n" +
                                           "Percentage change from the starting the current balances: {2}%"
-                              ,StartingBalance, CurrentBalance, percentChange);
+                              ,StartingBalance.toNAMoneyFormat(true), CurrentBalance.toNAMoneyFormat(true), percentChange);
             Console.WriteLine(report);
             return report;
         }
@@ -79,8 +80,8 @@ namespace BankingApp
 
         public class SavingsAccount : Account
         {
-            public override double StartingBalance { get { return startingBalance; } }
-            public override double CurrentBalance { get { return currentBalance; } }
+            //public  double StartingBalance { get { return startingBalance; } }
+            //public  double CurrentBalance { get { return currentBalance; } }
             Acticity status;
             public SavingsAccount(double startingBalance, double annualInterestRate) : base(startingBalance, annualInterestRate)
             {
@@ -129,7 +130,7 @@ namespace BankingApp
                 public double USValue(double rate)
                 {
                     double conversion = rate * currentBalance;
-                    Console.WriteLine("The conversion equals to {0:C}.",conversion);
+                    Console.WriteLine("The conversion equals to {0:C}.",conversion.toNAMoneyFormat(true));
                     return conversion;
                 }
             }
