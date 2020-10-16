@@ -5,181 +5,148 @@ namespace BankingApp
 
     abstract class Account : IAccount
     {
-        public double startingBalance { get; set; }
-
-        public double currentBalance { get ; set; }
-
-        private double totalOfDeposits;
-        private int numberOfDeposits;
-
-        private double totalOfWithdrawls;
-        private int numberOfWithdrawls;
-
+        public static double startingBalance;
+        public static double currentBalance;
+        private double totalDeposits;
+        private int numberDeposits;
+        private double totalWithdrawls;
+        private int numberWithdrawls;
         private double annualInterestRate;
+        private double monthServiceCharge;
 
-        private double monthlyServiceCharge;
 
-        public enum activity
+        public static double StartingBalance { get { return startingBalance;} set { startingBalance = value; } }
+        public static double CurrentBalance { get {return currentBalance; } set { currentBalance = value; } }
+
+        protected Account(double startingBalance, double annualInterestRate)
+        {
+            StartingBalance = startingBalance;
+            this.annualInterestRate = annualInterestRate;
+        }
+
+        private enum Acticity
         {
             active,
             inactive
         };
-
-        public Account(double currentBalance, double annualInterestRate)
+        public virtual void MakeDeposit(double amount)
         {
-            this.currentBalance = currentBalance;
-            this.annualInterestRate = annualInterestRate;
+            Account.CurrentBalance += amount + startingBalance;
+            Console.WriteLine("deposit works");
+            Console.WriteLine(CurrentBalance);
+            numberDeposits++;
         }
 
-        public virtual void MakeDeposit(double depositAmount)
+        public virtual void MakeWithdrawl(double amount)
         {
-            currentBalance += depositAmount;
-            Console.WriteLine(currentBalance);
-            Console.ReadKey();
-            numberOfDeposits++;
-        }
-        public virtual void MakeWithdrawl(double withdrawAmount)
-        {
-            currentBalance -= withdrawAmount;
-
-            numberOfWithdrawls++;
+            Account.CurrentBalance -= amount + startingBalance;
+            numberWithdrawls++;
         }
         public void CalculateInterest()
         {
-            double monthlyInterestRate = (annualInterestRate / 12);
-            double monthlyInterest = currentBalance * monthlyInterestRate;
-            double totalMonthlyBalance = currentBalance += monthlyInterest;
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Monthly interest rate: {0:C} \nMonthly interest amount: {1:C}\nTotal monthly balance: {2:C}",
-                                monthlyInterestRate, monthlyInterest, totalMonthlyBalance);
+            double monthlyInterestRate = annualInterestRate / 12;
+            Console.WriteLine(annualInterestRate);
+            double monthlyInterest = CurrentBalance * monthlyInterestRate;
+            Console.WriteLine(CurrentBalance + " e");
+            currentBalance += monthlyInterest;
+            Console.WriteLine("Monthly Interest Rate: {0}%\n" +
+                              "Monthly Interest: {1:C}",monthlyInterestRate,monthlyInterest);
         }
+
         public virtual string CloseAndReport()
         {
+            CurrentBalance -= monthServiceCharge;
             CalculateInterest();
-            Console.WriteLine();
-            numberOfWithdrawls = 0;
-            numberOfDeposits = 0;
-            double previousBalance = currentBalance;
-            double newBalance = previousBalance - monthlyServiceCharge;
-
-            double percentChange = (startingBalance / newBalance) * 100;
-
-            
-            string report = string.Format("Your previous balance was : {0}" +
-                                           "\nYour new balance is: {1}" +
-                                           "\nThe percentage of change from your starting and current balance is: {2}%",
-                                            previousBalance, newBalance, percentChange);
-            Console.ForegroundColor = ConsoleColor.Green;
+            numberDeposits = 0;
+            numberWithdrawls = 0;
+            monthServiceCharge = 0;
+            double percentChange = (StartingBalance / CurrentBalance) * 100;
+            string report = string.Format("Previous Balance: {0:C}\n" +
+                                          "New Balance: {1:C}\n" +
+                                          "Percentage change from the starting the current balances: {2}%"
+                              ,StartingBalance, CurrentBalance, percentChange);
             Console.WriteLine(report);
-            Console.ResetColor();
             return report;
-
         }
+            
+        
+
         public class SavingsAccount : Account
         {
-            activity status;
-            public SavingsAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
+            Acticity status;
+            public SavingsAccount(double startingBalance, double annualInterestRate) : base(startingBalance, annualInterestRate)
             {
                 if (currentBalance < 25)
-                {
-                    status = activity.inactive;
-                }
+                    status = Acticity.inactive;
                 else
-                {
-                    status = activity.active;
-                }
+                    status = Acticity.active;
             }
 
-            public override void MakeWithdrawl(double amount)//set enum in constructor, instantiate it as an object instead of bool and then set it. and it's -25
+            public override void MakeWithdrawl(double amount)
             {
-                if (status == activity.active)
-                {
+                if (status == Acticity.active)
                     base.MakeWithdrawl(amount);
-                }
                 else
-                {
-                    Console.WriteLine("Account is innactive due to funds being lower than $25." +
-                                      "\nRaise the balance to make future withdrawls.");
-                }
+                    Console.WriteLine("Your account status is currently inactive.\nTo activavte your account, your balance must be above $25.00.");
             }
 
-            public override void MakeDeposit(double depositAmount)
+            public override void MakeDeposit(double amount)
             {
-
-                if (status == activity.inactive && (currentBalance + depositAmount) > 25)
-                {
-                    base.MakeDeposit(depositAmount);
-                    status = activity.active;
-                    Console.WriteLine("Funds have been deposited. Account is now active!");
-                }
+                if (status == Acticity.inactive && (amount + currentBalance) > 25)
+                    base.MakeDeposit(amount);
+                else if (status == Acticity.inactive)
+                    Console.WriteLine("Your account status is currently inactive.\nTo activavte your account, your balance must be above $25.00.");
                 else
                 {
-                    Console.WriteLine("Funds have been deposited but the account remains" +
-                                      " innactive due to funds being lower than $25." +
-                                      "\nRaise the balance to re-activate the account.");
+                    base.MakeDeposit(amount);
                 }
             }
 
             public override string CloseAndReport()
             {
-                if (numberOfWithdrawls > 4)
+                if (numberWithdrawls > 4)
                 {
-                    int moreThanFour = 4 - numberOfWithdrawls;
-                    int absoluteValue = Math.Abs(moreThanFour);
-                    int serviceCharge = 1 * absoluteValue;
-                    monthlyServiceCharge += serviceCharge;
-                }
-                else
-                {
-                    return base.CloseAndReport();
+                    int serviceCharge = numberWithdrawls - 4;
+                    monthServiceCharge += serviceCharge;
                 }
                 return base.CloseAndReport();
             }
 
-            public class GlobalSavingsAccount : Account, IExchangeable
+            public class GlobalSavingsAccount : SavingsAccount, IExchangeable
             {
-                public GlobalSavingsAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
+                public GlobalSavingsAccount(double startingBalance, double annualInterestRate) : base(startingBalance, annualInterestRate)
                 {
                 }
 
                 public double USValue(double rate)
                 {
-                    return rate * currentBalance;
+                    double conversion = rate * currentBalance;
+                    Console.WriteLine("The conversion equals to {0:C}.",conversion);
+                    return conversion;
                 }
             }
         }
 
         public class ChequingAccount : Account
         {
-            public ChequingAccount(double currentBalance, double annualInterestRate) : base(currentBalance, annualInterestRate)
+            public ChequingAccount(double startingBalance, double annualInterestRate) : base(startingBalance, annualInterestRate)
             {
-
             }
+
             public override void MakeWithdrawl(double amount)
             {
-                double withdrawl = currentBalance - amount;
-                if (withdrawl < 0)
+                if((currentBalance - amount) < 0)
                 {
-                    Console.WriteLine("The withdrawal will not be made due to insufficient funds.");
-                    monthlyServiceCharge = 15;
-                    currentBalance -= monthlyServiceCharge;
-                }
-                else if (withdrawl > 0)
-                {
+                    monthServiceCharge = 15;
+                    currentBalance -= monthServiceCharge;
+                    Console.WriteLine("Withdrawl will not be made due to insufficient funds.");
+                }else
                     base.MakeWithdrawl(amount);
-                }
             }
 
-            public override void MakeDeposit(double depositAmount)
+            public override void MakeDeposit(double amount)
             {
-                base.MakeDeposit(depositAmount);
-            }
-
-            public override string CloseAndReport()
-            {
-                double withdrawlCharge = 0.1 * numberOfWithdrawls;
-                monthlyServiceCharge = 5 + withdrawlCharge;
-                return base.CloseAndReport();
+                base.MakeDeposit(amount);
             }
         }
 

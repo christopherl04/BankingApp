@@ -38,15 +38,13 @@ namespace BankingApp
                 {
                     case "a":
                         Console.WriteLine("Savings Menu\n");
-                        Console.WriteLine("");
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.WriteLine("A: Deposit\n" +
                                           "B: Withdrawal\n" +
                                           "C: Close + Report\n" +
                                           "R: Return to Bank Menu");
                         Console.ResetColor();
-                        Account.SavingsAccount savingsAccount = new Account.SavingsAccount(0,4);
-                        savingsAccount.currentBalance = 23;
+                        Account.SavingsAccount savingsAccount = new Account.SavingsAccount(5,12);
                         do
                         {
                             Console.Write(">> ");
@@ -58,6 +56,7 @@ namespace BankingApp
                                 Console.WriteLine("How much money would you like to deposit?");
                                 double depositAmount = Double.Parse(Console.ReadLine());
                                 savingsAccount.MakeDeposit(depositAmount);
+                                Console.ReadLine();
                                 return true;
                             case "b":
                                 Console.WriteLine("How much money would you like to withdraw?");
@@ -76,16 +75,16 @@ namespace BankingApp
                                 return true;
                         }
                     case "b":
-                        Account.ChequingAccount chequingAccount = new Account.ChequingAccount(2, 2);
+                        Account.ChequingAccount chequingAccount = new Account.ChequingAccount(5, 2);
+                        Console.WriteLine("Checking Menu\n");
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.WriteLine("A: Deposit\n" +
+                                          "B: Withdrawal\n" +
+                                          "C: Close + Report\n" +
+                                          "R: Return to Bank Menu");
+                            Console.ResetColor();
                         do
                         {
-                            Console.WriteLine("Checking Menu\n");
-                            Console.ForegroundColor = ConsoleColor.Blue;
-                            Console.WriteLine("A: Deposit\n" +
-                                              "B: Withdrawal\n" +
-                                              "C: Close + Report\n" +
-                                              "R: Return to Bank Menu");
-                            Console.ResetColor();
                             Console.Write(">> ");
                             input = Console.ReadLine();
                         } while (!(input.ToLower() == "a" || input.ToLower() == "b" || input.ToLower() == "c" || input.ToLower() == "r"));
@@ -112,9 +111,8 @@ namespace BankingApp
                                 Console.WriteLine("invalid input");
                                 return true;
                         }
-                        return true;
                     case "c":
-                        Account.SavingsAccount.GlobalSavingsAccount globalSavingsAccount = new Account.SavingsAccount.GlobalSavingsAccount(2, 2);
+                        Account.SavingsAccount.GlobalSavingsAccount globalSavingsAccount = new Account.SavingsAccount.GlobalSavingsAccount(5, 2);
                         do
                         {
                             Console.WriteLine("Global Savings Menu\n");
@@ -127,7 +125,7 @@ namespace BankingApp
                             Console.ResetColor();
                             Console.Write(">> ");
                             input = Console.ReadLine();
-                        } while (!(input.ToLower() == "a" || input.ToLower() == "b" || input.ToLower() == "c" || input.ToLower() == "r"));
+                        } while (!(input.ToLower() == "a" || input.ToLower() == "b" || input.ToLower() == "c" || input.ToLower() == "d" || input.ToLower() == "r"));
 
                         switch (input.ToLower())
                         {
@@ -150,6 +148,7 @@ namespace BankingApp
                                 Console.Write("Enter the conversion rate>> ");
                                 double rate = Double.Parse(Console.ReadLine());
                                 globalSavingsAccount.USValue(rate);
+                                Console.ReadLine();
                                 return true;
                             case "r":
                                 return true;
@@ -157,14 +156,12 @@ namespace BankingApp
                                 Console.WriteLine("invalid input");
                                 return true;
                         }
-                        return true;
                     case "q":
                         Environment.Exit(1);
                         return false;
                 }
             } while (!(menuInput.ToLower() == "a" || menuInput.ToLower() == "b" || menuInput.ToLower() == "c" || menuInput.ToLower() == "q"));
             return true;
-            Console.ReadLine();
         }
     }
 }
